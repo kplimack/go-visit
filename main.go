@@ -49,7 +49,7 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "The current visit count is %d on %s.\n", count, a.hostname)
+	fmt.Fprintf(w, "The current visit count is %d on %s running version %s.\n", count, a.hostname, version)
 }
 
 func main() {
