@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 
 	redis "gopkg.in/redis.v3"
 
@@ -29,6 +30,8 @@ var version = "changeme"
 type App struct {
 	redis  *redis.Client
 	config *Config
+
+	hostname string
 }
 
 func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -46,7 +49,7 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "The current visit count is %d.\n", count)
+	fmt.Fprintf(w, "The current visit count is %d on %s.\n", count, a.hostname)
 }
 
 func main() {
@@ -54,6 +57,11 @@ func main() {
 	err := envconfig.Process(APP_NAME, &config)
 	if err != nil {
 		log.Fatalf("error reading config: %s", err)
+	}
+
+	hostname, err := os.Hostname()
+	if err != nil {
+		hostname = "unknown-host"
 	}
 
 	log.Printf("starting version %s with config: %+v", version, config)
@@ -74,8 +82,9 @@ func main() {
 	})
 
 	app := App{
-		redis:  client,
-		config: &config,
+		redis:    client,
+		config:   &config,
+		hostname: hostname,
 	}
 
 	if err := http.Serve(listener, &app); err != nil {
