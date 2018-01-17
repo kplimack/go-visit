@@ -59,13 +59,13 @@ func main() {
 	log.Printf("starting version %s with config: %+v", version, config)
 
 	addr := fmt.Sprintf("%s:%d", config.Host, config.Port)
-	log.Printf("listening on %q", addr)
-
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatalf("error listening on %q: %s", addr, err)
 	}
 	defer listener.Close()
+
+	log.Printf("listening on %q", listener.Addr())
 
 	client := redis.NewClient(&redis.Options{
 		Addr:     config.RedisADDR,
