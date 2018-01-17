@@ -24,6 +24,8 @@ type Config struct {
 
 const APP_NAME = "visit"
 
+var version = "changeme"
+
 type App struct {
 	redis  *redis.Client
 	config *Config
@@ -54,7 +56,7 @@ func main() {
 		log.Fatalf("error reading config: %s", err)
 	}
 
-	log.Printf("starting with config: %+v", config)
+	log.Printf("starting version %s with config: %+v", version, config)
 
 	addr := fmt.Sprintf("%s:%d", config.Host, config.Port)
 	log.Printf("listening on %q", addr)
