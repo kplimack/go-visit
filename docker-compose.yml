@@ -1,0 +1,16 @@
+version: '2'
+services:
+  visit:
+    build: .
+    environment:
+      - VISIT_HOST=0.0.0.0
+      - VISIT_PORT=3000
+      - VISIT_REDISADDR=redis:6379
+      - VISIT_REDISKEY=visit.count
+    ports:
+      - 3000
+    depends_on:
+      - redis
+
+  redis:
+    image: redis
