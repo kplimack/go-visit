@@ -1,4 +1,4 @@
-.PHONY: version
+.PHONY: version test build docker docker-push docker-push-latest clean
 
 all: version test build
 
@@ -16,6 +16,10 @@ docker: version
 
 docker-push: docker
 	docker push partkyle/go-visit:$(shell cat VERSION)
+
+docker-push-latest: docker docker-push
+	docker tag partkyle/go-visit:$(shell cat VERSION) partkyle/go-visit:latest
+	docker push partkyle/go-visit:latest
 
 clean:
 	rm -rf build
