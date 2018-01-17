@@ -13,7 +13,7 @@ script:
 after_success:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
-      make docker-push-latest
-    else
-      make docker-push
+      make docker-push-latest;
+    else;
+      make docker-push;
     fi
