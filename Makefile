@@ -4,6 +4,7 @@ all: version test build
 
 version:
 	git describe --tags > VERSION
+	@cat VERSION
 
 test:
 	go test -v ./...
