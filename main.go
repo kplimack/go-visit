@@ -21,6 +21,9 @@ type Config struct {
 	RedisADDR     string
 	RedisPassword string
 	RedisDB       int64 `envconfig`
+
+	LivenessStatus int
+	ReadyStatus    int
 }
 
 const APP_NAME = "visit"
@@ -69,14 +72,27 @@ func (a *App) Visit(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "The current visit count is %d on %s running version %s.\n", count, a.hostname, version)
 }
 
-func (a *App) Health(w http.ResponseWriter, r *http.Request) {}
-func (a *App) Ready(w http.ResponseWriter, r *http.Request)  {}
+func (a *App) Health(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(a.config.LivenessStatus)
+}
+
+func (a *App) Ready(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(a.config.ReadyStatus)
+}
 
 func main() {
 	var config Config
 	err := envconfig.Process(APP_NAME, &config)
 	if err != nil {
 		log.Fatalf("error reading config: %s", err)
+	}
+
+	if config.LivenessStatus == 0 {
+		config.LivenessStatus = 200
+	}
+
+	if config.ReadyStatus == 0 {
+		config.ReadyStatus = 200
 	}
 
 	hostname, err := os.Hostname()
