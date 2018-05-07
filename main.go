@@ -32,9 +32,26 @@ type App struct {
 	config *Config
 
 	hostname string
+
+	*http.ServeMux
 }
 
-func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func NewApp(redis *redis.Client, config *Config, hostname string) *App {
+	app := &App{
+		redis:    redis,
+		config:   config,
+		hostname: hostname,
+		ServeMux: http.NewServeMux(),
+	}
+
+	app.HandleFunc("/", app.Visit)
+	app.HandleFunc("/health", app.Health)
+	app.HandleFunc("/ready", app.Ready)
+
+	return app
+}
+
+func (a *App) Visit(w http.ResponseWriter, r *http.Request) {
 	cmd := a.redis.Incr(a.config.RedisKey)
 	if cmd.Err() != nil {
 		w.WriteHeader(500)
@@ -51,6 +68,9 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "The current visit count is %d on %s running version %s.\n", count, a.hostname, version)
 }
+
+func (a *App) Health(w http.ResponseWriter, r *http.Request) {}
+func (a *App) Ready(w http.ResponseWriter, r *http.Request)  {}
 
 func main() {
 	var config Config
@@ -81,13 +101,9 @@ func main() {
 		DB:       config.RedisDB,
 	})
 
-	app := App{
-		redis:    client,
-		config:   &config,
-		hostname: hostname,
-	}
+	app := NewApp(client, &config, hostname)
 
-	if err := http.Serve(listener, &app); err != nil {
+	if err := http.Serve(listener, app); err != nil {
 		log.Fatalf("error serving http: %s", err)
 	}
 }
