@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visit-0.5.2
+spec:
+  selector:
+    matchLabels:
+      app: visit
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: visit
+    spec:
+      containers:
+      - name: visit
+        image: partkyle/go-visit:0.5.2
+        envFrom:
+        - configMapRef:
+            name: visit
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3
+
+        ports:
+        - containerPort: 80

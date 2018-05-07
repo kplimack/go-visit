@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visit
+spec:
+  selector:
+    matchLabels:
+      app: visit
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: visit
+    spec:
+      containers:
+      - name: visit
+        image: partkyle/go-visit:0.4.2
+        env:
+          - name: VISIT_HOST
+            value: "0.0.0.0"
+          - name: VISIT_PORT
+            value: "80"
+          - name: VISIT_REDISADDR
+            value: "redis:6379"
+          - name: VISIT_REDISKEY
+            value: "visit.count"
+        ports:
+        - containerPort: 80

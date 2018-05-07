@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+data:
+  VISIT_HOST: "0.0.0.0"
+  VISIT_PORT: "80"
+  VISIT_REDISADDR: "redis:6379"
+  VISIT_REDISKEY: "visit.count"
+metadata:
+  name: visit
