@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: visit
-        image: partkyle/go-visit:0.4.2
+        image: partkyle/go-visit:0.5.2
         env:
           - name: VISIT_HOST
             value: "0.0.0.0"

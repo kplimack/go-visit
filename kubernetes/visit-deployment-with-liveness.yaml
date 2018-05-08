@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: visit-0.5.2
+  name: visit
 spec:
   selector:
     matchLabels:

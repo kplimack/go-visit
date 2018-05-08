@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: visit-0.5.1
+  name: visit
 spec:
   selector:
     matchLabels:
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: visit
-        image: partkyle/go-visit:0.5.1
+        image: partkyle/go-visit:0.5.2
         envFrom:
         - configMapRef:
             name: visit
